@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>About Me - Hoaang Duy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Outfit:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div class="main-container">
+            <!-- Glass Effect Overlay -->
+            <div class="glass-overlay-container">
+                <div class="glass-cracks"></div>
+            </div>
+
+            <div class="avatar-frame">
+                <img src="{{ url_for('static', filename='images/my_avatar.jpg') }}" alt="My Avatar">
+            </div>
+            <div class="about-content">
+                <h1>A brief information about myself</h1>
+                <div class="title-separator">
+                    <div class="line"></div>
+                    <div class="diamond"></div>
+                    <div class="line"></div>
+                </div>
+                <div class="info-box">
+                    <div class="info-item">
+                        <i class="fas fa-user"></i>
+                        <span>Age(currently): 20</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-id-card"></i>
+                        <span>Name: Hoaang Duy</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-heart"></i>
+                        <span>I like cats, writing and regretting some of my life choices when I'm bored</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-book-open"></i>
+                        <span>Feel free to talk about visual novels (Key and TypeMoon mainly)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="yellow-banner">
+                <div class="white-box">
+                    <img src="{{url_for('static',filename ='images/necro.gif')}}" class="necro-gif">
+                </div>
+                <a href="https://x.com/HongDuy71263415" target="_blank" title="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.youtube.com/channel/UCmJZ4OdA3Uo6amRXqp7Q9yg" target="_blank" title="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://www.facebook.com/gowgow37501/" target="_blank" title="Facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </div>
+    </div>
+</body>
+
+</html>

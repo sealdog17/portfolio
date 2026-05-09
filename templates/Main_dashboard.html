@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Outfit:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <!-- background music -->
+    <div class="music-container" style="display: none;">
+        <audio autoplay loop id="bgMusic" crossorigin="anonymous">
+            <source src="{{ url_for('static', filename='music/Sakuzyo.mp3') }}" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <!-- Global Background Video -->
+    <video autoplay muted loop playsinline class="bg-video">
+        <source src="{{ url_for('static', filename='video/video1.mp4') }}" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <!-- Audio Visualizer Canvas -->
+    <canvas id="audio-visualizer"></canvas>
+
+    <div class="hero-container">
+        <div class="content-overlay">
+            <h1>Welcome to My Profile</h1>
+            <h4>The professional profile and good design</h4>
+            <div class="nav-menu">
+                <a href="#about" class="nav-button">About</a>
+                <a href="#hobby" class="nav-button">My Games</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="page-wrapper">
+        <div class="main-container">
+            <!-- tape effect overlay -->
+            <div class="tape-overlay-container">
+                <div class="washi-tape"></div>
+            </div>
+            <div class="avatar-frame">
+                <img src="{{ url_for('static', filename='images/my_avatar.jpg') }}" alt="My Avatar">
+            </div>
+            <div class="papertitle">
+                <img src="{{ url_for('static', filename='images/OIP.webp') }}" alt="My frontwall">
+            </div>
+            <div class="about-content">
+                <h1>A brief information about myself</h1>
+                <div class="title-separator">
+                    <div class="line"></div>
+                    <div class="diamond"></div>
+                    <div class="line"></div>
+                </div>
+                <div class="info-box">
+                    <div class="info-item">
+                        <i class="fas fa-user"></i>
+                        <span>Age(currently):20 , 18/7/2005</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-id-card"></i>
+                        <span>Name: Hoaang Duy</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-heart"></i>
+                        <span>I like cats, writing and regretting some of my life choices when I'm bored</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-book-open"></i>
+                        <span>Feel free to talk about visual novels (Key and TypeMoon mainly)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="yellow-banner">
+                <div class="white-box">
+                    <img src="{{url_for('static',filename ='images/necro.gif')}}" class="necro-gif">
+                </div>
+                <a href="https://x.com/HongDuy71263415" target="_blank" title="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.youtube.com/channel/UCmJZ4OdA3Uo6amRXqp7Q9yg" target="_blank" title="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://www.facebook.com/gowgow37501/" target="_blank" title="Facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hobby Section -->
+    <section id="hobby" class="page-wrapper">
+        <!-- ===== HOBBY: STEAM GAMES SECTION ===== -->
+        <div class="hobby-section" id="hobby-content">
+            <h2 class="hobby-title">
+                <i class="fab fa-steam"></i> My Steam Library
+            </h2>
+            <p class="hobby-subtitle">Top games I've spent my time on</p>
+
+            <div class="games-grid" id="games-grid">
+                <!-- Loading state -->
+                <div class="games-loading" id="games-loading">
+                    <div class="loading-spinner"></div>
+                    <span>Fetching games from Steam...</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        async function loadSteamGames() {
+            const grid = document.getElementById('games-grid');
+            const loading = document.getElementById('games-loading');
+
+            try {
+                const res = await fetch('/hobby-games');
+                const data = await res.json();
+
+                if (data.error) {
+                    loading.innerHTML = `<p style="color:#ff6b6b">⚠️ ${data.error}</p>`;
+                    return;
+                }
+
+                loading.style.display = 'none';
+
+                data.games.forEach(game => {
+                    const card = document.createElement('a');
+                    card.href = game.store_url;
+                    card.target = '_blank';
+                    card.className = 'game-card';
+                    card.title = game.name;
+                    card.innerHTML = `
+                        <img src="${game.header_image}" 
+                             alt="${game.name}" 
+                             loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/231x87?text=No+Image'">
+                        <div class="game-card-overlay">
+                            <span class="game-name">${game.name}</span>
+                            <span class="game-hours">${game.playtime_hours}h played</span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+            } catch (err) {
+                loading.innerHTML = `<p style="color:#ff6b6b">⚠️ Could not load games. Make sure the server is running.</p>`;
+                console.error(err);
+            }
+        }
+
+        loadSteamGames();
+
+        // Autoplay background music and setup visualizer on first user interaction to bypass browser restrictions
+        document.body.addEventListener('click', function () {
+            var bgMusic = document.getElementById('bgMusic');
+
+            // Setup visualizer only once
+            if (!window.audioVisualizerInitialized) {
+                window.audioVisualizerInitialized = true;
+
+                try {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    const audioCtx = new AudioContext();
+                    const analyser = audioCtx.createAnalyser();
+
+                    // Connect audio source
+                    const source = audioCtx.createMediaElementSource(bgMusic);
+                    source.connect(analyser);
+                    analyser.connect(audioCtx.destination);
+
+                    analyser.fftSize = 256;
+                    const bufferLength = analyser.frequencyBinCount;
+                    const dataArray = new Uint8Array(bufferLength);
+
+                    const canvas = document.getElementById('audio-visualizer');
+                    const canvasCtx = canvas.getContext('2d');
+
+                    function resizeCanvas() {
+                        canvas.width = window.innerWidth;
+                        canvas.height = 150;
+                    }
+                    window.addEventListener('resize', resizeCanvas);
+                    resizeCanvas();
+
+                    function draw() {
+                        requestAnimationFrame(draw);
+                        analyser.getByteFrequencyData(dataArray);
+
+                        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+                        const barWidth = (canvas.width / bufferLength) * 2.5;
+                        let x = 0;
+
+                        for (let i = 0; i < bufferLength; i++) {
+                            const barHeight = dataArray[i];
+
+                            const gradient = canvasCtx.createLinearGradient(0, canvas.height, 0, canvas.height - barHeight / 1.5);
+                            gradient.addColorStop(0, 'rgba(205, 1, 255, 0.1)');
+                            gradient.addColorStop(0.5, 'rgba(205, 1, 255, 0.5)'); // Gold/Yellow
+                            gradient.addColorStop(1, 'rgba(129, 1, 255, 0.8)'); // Orange
+
+                            canvasCtx.fillStyle = gradient;
+                            canvasCtx.shadowBlur = 10;
+                            canvasCtx.shadowColor = 'rgba(255, 223, 0, 0.5)';
+
+                            // Draw bars with rounded-like appearance
+                            canvasCtx.fillRect(x, canvas.height - barHeight / 1.5, barWidth, barHeight / 1.5);
+
+                            x += barWidth + 2; // spacing
+                        }
+                    }
+
+                    draw();
+
+                    // Resume context if suspended
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                } catch (e) {
+                    console.error("Web Audio API not supported or error initializing:", e);
+                }
+            }
+
+            if (bgMusic && bgMusic.paused) {
+                bgMusic.play();
+            }
+        });
+    </script>
+</body>
+
+</html>
